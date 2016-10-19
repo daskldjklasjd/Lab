@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bupt.vouching.dao.ClassDao" >
+
+  <resultMap id="baseResultMap" type="com.bupt.vouching.bean.Class" >
+    <result column="classid" property="classId" jdbcType="CHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="isactive" property="isActive" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="baseColumnList">
+  	classid,name,isactive
+  </sql>
+  
+  <select id="findClassById" parameterType="java.lang.String" resultMap="baseResultMap">
+	  select 
+	  <include refid="baseColumnList"/>
+	  from class
+	  where classid = #{0}
+  </select>
+  
+  <select id="findAllActiveClass" parameterType="java.lang.String" resultMap="baseResultMap">
+	  select classid,name
+	  from class
+	  where isactive = 1
+  </select>
+  
+</mapper>

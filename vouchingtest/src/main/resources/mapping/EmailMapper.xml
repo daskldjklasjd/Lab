@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bupt.vouching.dao.EmailDao" >
+
+  <resultMap id="baseResultMap" type="com.bupt.vouching.bean.Email" >
+    <result column="emailid" property="emailId" jdbcType="CHAR" />
+    <result column="senterid" property="senterId" jdbcType="VARCHAR" />
+    <result column="senteremail" property="senterEmail" jdbcType="VARCHAR" />
+    <result column="sentername" property="senterName" jdbcType="VARCHAR" />
+    <result column="receiveid" property="receiveId" jdbcType="VARCHAR" />
+    <result column="receiveemail" property="receiveEmail" jdbcType="VARCHAR" />
+    <result column="receiveename" property="receiveName" jdbcType="VARCHAR" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="sentdel" property="sentDel" jdbcType="INTEGER" />
+    <result column="receivedel" property="receiveDel" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARBINARY" />
+    <result column="isread" property="isRead" jdbcType="INTEGER" />
+    <result column="sentdate" property="sentDate" jdbcType="DATE" />
+  </resultMap>
+  
+  <sql id="baseColumnList">
+  	emailid,senterid,senteremail,receiveid,receiveemail,subject,content,
+  	isread,sentdate,sentername,receivename,sentdel,receivedel
+  </sql>
+  
+  <select id="findUnreadCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+	select count(1) 
+	from email 
+	where receiveid = #{0} and isread = 0 and receivedel = 0
+  </select>
+  
+  <select id="findLastFiveUnreadEmail" parameterType="java.lang.String" resultType="com.bupt.vouching.bean.Email">
+  	select sentername,subject,sentdate
+  	from email
+  	where receiveid = #{0} and isread = 0 and receivedel = 0
+  	order by sentdate DESC
+  	limit 0,5
+  </select>
+  
+  <select id="findReceiveEmails" parameterType="java.lang.String" resultType="com.bupt.vouching.bean.Email">
+  	select 
+  	<include refid="baseColumnList"/>
+  	from email
+  	where receiveid = #{0} and receivedel = 0
+  	order by sentdate DESC
+  </select>
+  
+  <select id="findSentEmails" parameterType="java.lang.String" resultType="com.bupt.vouching.bean.Email">
+  	select 
+  	<include refid="baseColumnList"/>
+  	from email
+  	where senterid = #{0} and sentdel = 0
+  	order by sentdate DESC
+  </select>
+  
+  <update id="updateDelFlagByType" parameterType="java.lang.Object">
+  	update email
+  	<choose>
+  		<when test="type == 1">set receivedel = 1 </when>
+  		<otherwise>set sentdel = 1 </otherwise>
+  	</choose>
+  	where emailid = #{emailId}
+  </update>
+  
+  <delete id="deleteRealEmail" parameterType="java.lang.String">
+  	delete from email where emailid = #{0}
+  </delete>
+  
+  <insert id="addEmail" parameterType="com.bupt.vouching.bean.Email">
+  	insert into email(emailid,senterid,senteremail,sentername,receiveid,receiveemail,receivename,subject,content,sentdate,sentdel,receivedel,isread)
+  	values(#{emailId},#{senterId},#{senterEmail},#{senterName},#{receiveId},#{receiveEmail},#{receiveName},#{subject},#{content},#{sentDate},#{sentDel},#{receiveDel},#{isRead})
+  </insert>
+ 
+</mapper>

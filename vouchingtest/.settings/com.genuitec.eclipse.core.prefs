@@ -1,0 +1,4 @@
+#Tue Oct 18 10:51:47 CST 2016
+eclipse.preferences.version=1
+validator.Checked=src/main/webapp/jquery/jquery-3.1.1.min.js,src/main/webapp/WEB-INF/jsps/front/email/emailIndex.jsp,src/main/webapp/WEB-INF/pages/front/common/headAndNavigation.jsp,src/main/webapp/js,src/main/webapp/WEB-INF/pages/front/login.jsp
+validator.Unchecked=
